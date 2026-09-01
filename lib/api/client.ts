@@ -4,21 +4,9 @@ import {
   normalizeValidationErrors,
   type ValidationErrors,
 } from "@/lib/api/errors";
+import type { ApiResponse } from "@/types/api";
 
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
-
-export interface PaginatedResponse<T> {
-  content: T[];
-  last: boolean;
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-}
+export type { ApiResponse, PaginatedResponse } from "@/types/api";
 
 export interface ApiRequestOptions extends Omit<RequestInit, "body" | "headers"> {
   accessToken?: string;
