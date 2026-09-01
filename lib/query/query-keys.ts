@@ -5,6 +5,8 @@ import type { AdminUserFilters } from "@/types/user";
 
 export const queryKeys = {
   dashboard: () => ["dashboard"] as const,
+  popularBooks: () => ["books", "popular"] as const,
+  recentlyAddedBooks: () => ["books", "new"] as const,
   categories: () => ["categories"] as const,
   books: (filters: AdminBookFilters = {}) => ["books", filters] as const,
   book: (id: number) => ["book", id] as const,

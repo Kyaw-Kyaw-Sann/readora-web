@@ -1,3 +1,5 @@
+import { CategoryManagement } from "@/components/admin/category-management";
+
 export default function AdminCategoriesPage() {
-  return <main>Categories</main>;
+  return <CategoryManagement />;
 }
