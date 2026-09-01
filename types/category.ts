@@ -5,3 +5,12 @@ export interface Category {
   description: string;
   active: boolean;
 }
+
+export interface CreateCategoryRequest {
+  name: string;
+  description: string;
+}
+
+export interface UpdateCategoryRequest extends CreateCategoryRequest {
+  active: boolean;
+}
