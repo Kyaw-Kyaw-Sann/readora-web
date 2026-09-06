@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { apiClient } from "@/lib/api/client";
 import { getApiErrorMessage, isApiError } from "@/lib/api/errors";
 import { authorizedApiRequest } from "@/lib/auth/authorized-request";
 import type { PaginatedResponse } from "@/types/api";
@@ -8,6 +9,16 @@ import type { BookListItem } from "@/types/book";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  try {
+    return NextResponse.json(
+      await apiClient<PaginatedResponse<BookListItem>>("/api/books/popular"),
+    );
+  } catch (error) {
+    if (!isApiError(error) || error.status !== 401) {
+      return toErrorResponse(error);
+    }
+  }
+
   try {
     return NextResponse.json(
       await authorizedApiRequest<PaginatedResponse<BookListItem>>("/api/books/popular"),

@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -19,7 +21,14 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
   const { resolvedTheme, setTheme, theme } = useTheme();
-  const ThemeIcon = resolvedTheme === "dark" ? Moon : Sun;
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
+
+  const ThemeIcon = !mounted ? Monitor : resolvedTheme === "dark" ? Moon : Sun;
+  const selectedTheme = mounted ? theme : undefined;
 
   return (
     <DropdownMenu>
@@ -37,23 +46,27 @@ export function ThemeToggle({ showLabel = false }: ThemeToggleProps) {
         {showLabel ? <span>Theme</span> : null}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        <DropdownMenuGroup>
         <DropdownMenuItem onClick={() => setTheme("light")}>
           <Sun aria-hidden="true" />
           Light
-          {theme === "light" ? <span className="ml-auto text-primary">✓</span> : null}
+          {selectedTheme === "light" ? <span className="ml-auto text-primary">✓</span> : null}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           <Moon aria-hidden="true" />
           Dark
-          {theme === "dark" ? <span className="ml-auto text-primary">✓</span> : null}
+          {selectedTheme === "dark" ? <span className="ml-auto text-primary">✓</span> : null}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
           <Monitor aria-hidden="true" />
           System
-          {theme === "system" ? <span className="ml-auto text-primary">✓</span> : null}
+          {selectedTheme === "system" ? <span className="ml-auto text-primary">✓</span> : null}
         </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BookOpen, FileAudio, FileText, ImageIcon, LoaderCircle } from "lucide-react";
+import { FileAudio, FileText, ImageIcon, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
