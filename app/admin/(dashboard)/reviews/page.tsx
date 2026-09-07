@@ -1,3 +1,5 @@
+import { ReviewManagement } from "@/components/admin/review-management";
+
 export default function AdminReviewsPage() {
-  return <main>Reviews</main>;
+  return <ReviewManagement />;
 }
