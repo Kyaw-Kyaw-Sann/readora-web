@@ -1,3 +1,5 @@
+import { SubscriptionManagement } from "@/components/admin/subscription-management";
+
 export default function AdminSubscriptionsPage() {
-  return <main>Subscriptions</main>;
+  return <SubscriptionManagement />;
 }

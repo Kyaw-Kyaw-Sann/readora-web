@@ -11,6 +11,15 @@ export interface Subscription {
   cancelledAt: string | null;
 }
 
+export interface AdminSubscription extends Subscription {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    profileImageUrl: string | null;
+  };
+}
+
 export interface AdminSubscriptionFilters {
   search?: string;
   status?: SubscriptionStatus;
