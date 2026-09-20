@@ -45,6 +45,14 @@ export function getApiErrorMessage(status: number, message?: string): string {
     return "This request conflicts with the current data. Please refresh and try again.";
   }
 
+  if (status === 413) {
+    return "The selected file or upload is too large.";
+  }
+
+  if (status === 415) {
+    return "The upload format is not supported. Please check the selected files and try again.";
+  }
+
   if (status === 422) {
     return message || "Please review the highlighted fields and try again.";
   }

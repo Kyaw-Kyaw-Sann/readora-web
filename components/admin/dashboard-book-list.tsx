@@ -35,12 +35,12 @@ export function DashboardBookList({
   showViews = false,
 }: DashboardBookListProps) {
   return (
-    <Card className="border border-border py-0 shadow-card">
-      <CardHeader className="border-b py-readora-md">
-        <CardTitle>{title}</CardTitle>
+    <Card className="border border-border/80 py-0 shadow-card">
+      <CardHeader className="border-b border-border/80 px-5 py-4">
+        <CardTitle className="text-sm font-semibold">{title}</CardTitle>
         <p className="text-xs text-muted-foreground">{description}</p>
       </CardHeader>
-      <CardContent className="p-readora-md">
+      <CardContent className="p-5">
         {isLoading ? <BookListSkeleton /> : null}
         {isError ? (
           <EmptyState
@@ -64,9 +64,9 @@ export function DashboardBookList({
           />
         ) : null}
         {!isLoading && !isError && books?.length ? (
-          <ul className="divide-y divide-border">
+          <ul className="divide-y divide-border/80">
             {books.slice(0, 5).map((book) => (
-              <li className="flex items-center gap-3 py-3 first:pt-0 last:pb-0" key={book.id}>
+              <li className="flex items-center gap-3 py-3.5 first:pt-0 last:pb-0" key={book.id}>
                 <BookCover book={book} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">{book.title}</p>
@@ -83,7 +83,7 @@ export function DashboardBookList({
                   )}
                 </div>
                 <Badge
-                  className={book.accessType === "PREMIUM" ? "bg-premium text-primary-foreground" : "bg-success/10 text-success"}
+                  className={book.accessType === "PREMIUM" ? "border-primary/20 bg-primary/10 text-primary" : "border-success/20 bg-success/10 text-success"}
                   variant="secondary"
                 >
                   {book.accessType === "PREMIUM" ? "Premium" : "Free"}
@@ -102,14 +102,14 @@ function BookCover({ book }: { book: BookListItem }) {
 
   if (!book.coverUrl || hasImageError) {
     return (
-      <span className="flex h-12 w-9 shrink-0 items-center justify-center rounded-md bg-secondary text-primary">
+      <span className="flex h-13 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-secondary text-primary">
         <BookOpen aria-hidden="true" className="size-4" />
       </span>
     );
   }
 
   return (
-    <span className="relative h-12 w-9 shrink-0 overflow-hidden rounded-md bg-secondary shadow-sm">
+    <span className="relative h-13 w-10 shrink-0 overflow-hidden rounded-md border border-border bg-secondary shadow-sm">
       <Image
         alt={`Cover of ${book.title}`}
         className="object-cover"

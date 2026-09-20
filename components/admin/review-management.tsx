@@ -1,9 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
-import { BookOpen, ChevronLeft, ChevronRight, Eye, MessageSquareText, RefreshCw, Search, Star, Trash2 } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Eye, MessageSquareText, RefreshCw, Search, Star, Trash2, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useDeferredValue, useState } from "react";
 import { toast } from "sonner";
 
 import { UserAvatar } from "@/components/admin/user-management";
@@ -35,7 +35,8 @@ export function ReviewManagement() {
   const [filters, setFilters] = useState<AdminReviewFilters>({ page: 0, size: pageSize });
   const [reviewToView, setReviewToView] = useState<AdminReview | null>(null);
   const [reviewToDelete, setReviewToDelete] = useState<AdminReview | null>(null);
-  const reviewsQuery = useReviews(filters);
+  const deferredSearch = useDeferredValue(filters.search);
+  const reviewsQuery = useReviews({ ...filters, search: deferredSearch });
   const reviews = reviewsQuery.data;
 
   const updateFilters = (changes: Partial<AdminReviewFilters>) => {
@@ -86,16 +87,17 @@ export function ReviewManagement() {
 }
 
 function ReviewFilters({ filters, onChange }: { filters: AdminReviewFilters; onChange: (changes: Partial<AdminReviewFilters>) => void }) {
+  const hasFilters = filters.search !== undefined || filters.rating !== undefined;
+
   return (
-    <Card className="border border-border py-0 shadow-card">
-      <CardContent className="grid gap-3 p-readora-md md:grid-cols-[minmax(0,1fr)_10rem_auto]">
+      <div aria-label="Review filters" className="grid gap-3 md:grid-cols-[minmax(0,1fr)_11rem_auto]">
         <div className="relative">
-          <Search aria-hidden="true" className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground" />
-          <Input className="pl-9" onChange={(event) => onChange({ search: event.target.value || undefined })} placeholder="Search reader, book, or comment…" value={filters.search ?? ""} />
+          <Search aria-hidden="true" className="pointer-events-none absolute top-3 left-3 size-4 text-muted-foreground" />
+          <Input className="h-10 bg-card pl-9" onChange={(event) => onChange({ search: event.target.value || undefined })} placeholder="Search reader, book, or comment…" type="search" value={filters.search ?? ""} />
         </div>
         <label className="sr-only" htmlFor="rating-filter">Filter by rating</label>
         <select
-          className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="h-10 rounded-lg border border-input bg-card px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           id="rating-filter"
           onChange={(event) => onChange({ rating: event.target.value ? Number(event.target.value) : undefined })}
           value={filters.rating ?? ""}
@@ -103,9 +105,8 @@ function ReviewFilters({ filters, onChange }: { filters: AdminReviewFilters; onC
           <option value="">All ratings</option>
           {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} stars</option>)}
         </select>
-        <Button onClick={() => onChange({ search: undefined, rating: undefined })} type="button" variant="outline">Clear filters</Button>
-      </CardContent>
-    </Card>
+        {hasFilters ? <Button className="h-10 justify-self-start px-3 md:justify-self-auto" onClick={() => onChange({ search: undefined, rating: undefined })} type="button" variant="ghost"><X aria-hidden="true" />Clear</Button> : null}
+      </div>
   );
 }
 

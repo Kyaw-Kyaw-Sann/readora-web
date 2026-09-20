@@ -22,8 +22,8 @@ export function AdminShell({ children }: AdminShellProps) {
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:pl-64">
-      <div className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-sidebar-border lg:block">
+    <div className="admin-shell min-h-screen bg-background text-foreground lg:pl-62">
+      <div className="fixed inset-y-0 left-0 z-40 hidden w-62 border-r border-sidebar-border lg:block">
         <AdminSidebar />
       </div>
 
@@ -48,7 +48,7 @@ export function AdminShell({ children }: AdminShellProps) {
         </DialogContent>
       </Dialog>
 
-      <main className="mx-auto w-full max-w-screen-2xl p-readora-md sm:p-readora-lg lg:p-readora-xl">
+      <main className="mx-auto w-full max-w-[1540px] p-4 sm:p-6 lg:p-8">
         {children}
       </main>
     </div>

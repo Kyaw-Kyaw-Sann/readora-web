@@ -75,6 +75,7 @@ export function AdminLoginForm() {
           aria-describedby={emailError ? "email-error" : undefined}
           aria-invalid={Boolean(emailError)}
           autoComplete="email"
+          className="h-10"
           id="email"
           placeholder="admin@example.com"
           type="email"
@@ -95,6 +96,7 @@ export function AdminLoginForm() {
           aria-describedby={passwordError ? "password-error" : undefined}
           aria-invalid={Boolean(passwordError)}
           autoComplete="current-password"
+          className="h-10"
           id="password"
           type="password"
           {...form.register("password")}
@@ -112,7 +114,7 @@ export function AdminLoginForm() {
         </p>
       ) : null}
 
-      <Button className="w-full" disabled={form.formState.isSubmitting} size="lg" type="submit">
+      <Button className="h-10 w-full" disabled={form.formState.isSubmitting} size="lg" type="submit">
         <LogIn aria-hidden="true" />
         {form.formState.isSubmitting ? "Signing in…" : "Sign in"}
       </Button>

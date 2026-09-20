@@ -7,7 +7,7 @@ export function HeroSection() {
   return (
     <section className="relative isolate">
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_72%_38%,color-mix(in_oklch,var(--primary)_15%,transparent),transparent_34%)]" />
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[0.9fr_1.1fr] lg:py-24">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pt-8 pb-16 sm:px-8 sm:pt-10 sm:pb-20 lg:grid-cols-[0.9fr_1.1fr] lg:pt-12 lg:pb-18">
         <div className="relative z-10 text-center lg:text-left">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-3 py-1.5 text-xs font-semibold text-primary">
             <Sparkles className="size-3.5" /> Stories that stay with you
@@ -30,8 +30,8 @@ export function HeroSection() {
         <div className="relative mx-auto flex w-full max-w-xl items-center justify-center lg:min-h-150">
           <div className="absolute size-96 rounded-full border border-primary/20 sm:size-125" />
           <div className="absolute size-78 rotate-12 rounded-[42%_58%_62%_38%] bg-primary/10 blur-sm sm:size-108" />
-          <div className="absolute left-2 top-1/3 size-20 rounded-full bg-primary/10 blur-xl sm:left-10" />
-          <Sparkles className="absolute right-8 top-20 size-7 text-primary sm:right-12" />
+          <div className="absolute top-1/3 left-2 size-20 rounded-full bg-primary/10 blur-xl sm:left-10" />
+          <Sparkles className="absolute top-20 right-8 size-7 text-primary sm:right-12" />
           <Sparkles className="absolute bottom-24 left-6 size-5 text-primary sm:left-16" />
           <div className="relative w-[245px] rotate-1 overflow-hidden rounded-[2.7rem] border-[7px] border-[#2d261f] bg-card p-1.5 shadow-[0_30px_80px_rgba(91,57,15,0.25)] sm:w-[285px] dark:border-[#0e0d0b]">
             <div className="absolute top-2 left-1/2 z-10 h-4 w-24 -translate-x-1/2 rounded-full bg-[#191714]" />

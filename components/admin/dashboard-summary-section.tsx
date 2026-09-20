@@ -25,16 +25,16 @@ export function DashboardSummarySection({
   items,
 }: DashboardSummarySectionProps) {
   return (
-    <Card className="border border-border py-0 shadow-card">
-      <CardHeader className="border-b py-readora-md">
-        <CardTitle>{title}</CardTitle>
+    <Card className="border border-border/80 py-0 shadow-card">
+      <CardHeader className="border-b border-border/80 px-5 py-4">
+        <CardTitle className="text-sm font-semibold">{title}</CardTitle>
         <p className="text-xs text-muted-foreground">{description}</p>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-x-5 gap-y-4 p-readora-md sm:grid-cols-3">
+      <CardContent className="grid grid-cols-2 gap-px bg-border/70 p-0 sm:grid-cols-3">
         {items.map((item) => (
-          <div key={item.label}>
-            <p className="text-xs text-muted-foreground">{item.label}</p>
-            <p className={`mt-1 text-lg font-semibold ${toneClasses[item.tone ?? "default"]}`}>
+          <div className="bg-card p-4" key={item.label}>
+            <p className="text-[11px] font-medium text-muted-foreground">{item.label}</p>
+            <p className={`mt-1.5 text-lg font-semibold tracking-tight ${toneClasses[item.tone ?? "default"]}`}>
               {item.value}
             </p>
           </div>
