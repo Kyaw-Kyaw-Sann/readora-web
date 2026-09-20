@@ -20,12 +20,12 @@ export function LandingNavbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="relative z-50 border-b border-border/60 bg-background/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-5 sm:px-8">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/88 backdrop-blur-xl">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
         <ReadoraLogo />
-        <nav aria-label="Main navigation" className="hidden items-center gap-8 md:flex">
+        <nav aria-label="Main navigation" className="hidden items-center gap-1 rounded-full border border-border/70 bg-card/70 p-1 md:flex">
           {links.map((link) => (
-            <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary" href={link.href} key={link.label}>
+            <Link className="rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" href={link.href} key={link.label}>
               {link.label}
             </Link>
           ))}
@@ -42,7 +42,7 @@ export function LandingNavbar() {
         </div>
       </div>
       {open ? (
-        <div className="absolute inset-x-0 top-full border-b border-border bg-background p-5 shadow-float md:hidden">
+        <div className="absolute inset-x-0 top-full border-b border-border bg-background/98 p-5 shadow-float backdrop-blur-xl md:hidden">
           <nav aria-label="Mobile navigation" className="mx-auto flex max-w-6xl flex-col gap-1">
             {links.map((link) => (
               <Link className="rounded-lg px-3 py-3 text-sm font-medium hover:bg-accent" href={link.href} key={link.label} onClick={() => setOpen(false)}>{link.label}</Link>

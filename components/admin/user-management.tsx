@@ -1,9 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, RefreshCw, Search, UsersRound } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw, Search, UsersRound, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useDeferredValue, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,8 @@ const pageSize = 10;
 
 export function UserManagement() {
   const [filters, setFilters] = useState<AdminUserFilters>({ page: 0, size: pageSize });
-  const usersQuery = useUsers(filters);
+  const deferredSearch = useDeferredValue(filters.search);
+  const usersQuery = useUsers({ ...filters, search: deferredSearch });
   const users = usersQuery.data;
 
   const updateFilters = (changes: Partial<AdminUserFilters>) => {
@@ -71,21 +72,24 @@ export function UserManagement() {
 }
 
 function UserFilters({ filters, onChange }: { filters: AdminUserFilters; onChange: (changes: Partial<AdminUserFilters>) => void }) {
+  const hasFilters = filters.search !== undefined || filters.verified !== undefined || filters.premium !== undefined;
+  const selectClassName = "h-10 rounded-lg border border-input bg-card px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+
   return (
-    <Card className="border border-border py-0 shadow-card">
-      <CardContent className="grid gap-3 p-readora-md md:grid-cols-[minmax(0,1fr)_10rem_10rem_auto]">
+      <div aria-label="User filters" className="grid gap-3 md:grid-cols-[minmax(0,1fr)_11rem_11rem_auto]">
         <div className="relative">
-          <Search aria-hidden="true" className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground" />
+          <Search aria-hidden="true" className="pointer-events-none absolute top-3 left-3 size-4 text-muted-foreground" />
           <Input
-            className="pl-9"
+            className="h-10 bg-card pl-9"
             onChange={(event) => onChange({ search: event.target.value || undefined })}
             placeholder="Search name or email…"
+            type="search"
             value={filters.search ?? ""}
           />
         </div>
         <label className="sr-only" htmlFor="verification-filter">Filter verification status</label>
         <select
-          className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className={selectClassName}
           id="verification-filter"
           onChange={(event) => onChange({ verified: toBooleanFilter(event.target.value) })}
           value={toFilterValue(filters.verified)}
@@ -96,7 +100,7 @@ function UserFilters({ filters, onChange }: { filters: AdminUserFilters; onChang
         </select>
         <label className="sr-only" htmlFor="premium-filter">Filter premium status</label>
         <select
-          className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          className={selectClassName}
           id="premium-filter"
           onChange={(event) => onChange({ premium: toBooleanFilter(event.target.value) })}
           value={toFilterValue(filters.premium)}
@@ -105,11 +109,8 @@ function UserFilters({ filters, onChange }: { filters: AdminUserFilters; onChang
           <option value="true">Premium</option>
           <option value="false">Normal</option>
         </select>
-        <Button onClick={() => onChange({ search: undefined, verified: undefined, premium: undefined })} type="button" variant="outline">
-          Clear filters
-        </Button>
-      </CardContent>
-    </Card>
+        {hasFilters ? <Button className="h-10 justify-self-start px-3 md:justify-self-auto" onClick={() => onChange({ search: undefined, verified: undefined, premium: undefined })} type="button" variant="ghost"><X aria-hidden="true" />Clear</Button> : null}
+      </div>
   );
 }
 

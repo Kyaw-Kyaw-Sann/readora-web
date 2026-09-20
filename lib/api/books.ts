@@ -1,6 +1,13 @@
 import { ApiError, getApiErrorMessage } from "@/lib/api/errors";
 import type { ApiResponse, PaginatedResponse } from "@/types/api";
-import type { AdminBookFilters, Book, BookListItem, CreateBookRequest } from "@/types/book";
+import type {
+  AdminBookFilters,
+  Book,
+  BookFiles,
+  BookListItem,
+  CreateBookPayload,
+  UpdateBookPayload,
+} from "@/types/book";
 
 async function bookRequest<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
@@ -21,15 +28,38 @@ export function getAdminBooks(filters: AdminBookFilters) {
 
 export function getBook(id: number) { return bookRequest<Book>(`/api/books/${id}`); }
 
-function toBookFormData(data: CreateBookRequest, files: BookFiles) {
+export function buildBookFormData(
+  payload: CreateBookPayload | UpdateBookPayload,
+  files: BookFiles,
+) {
   const formData = new FormData();
-  formData.append("request", JSON.stringify(data));
+  formData.append(
+    "request",
+    new Blob([JSON.stringify(payload)], { type: "application/json" }),
+  );
   if (files.cover) formData.append("cover", files.cover);
   if (files.pdf) formData.append("pdf", files.pdf);
   if (files.audio) formData.append("audio", files.audio);
   return formData;
 }
 
-export interface BookFiles { cover?: File; pdf?: File; audio?: File; }
-export function createBook(data: CreateBookRequest, files: BookFiles) { return bookRequest<Book>("/api/admin/books", { body: toBookFormData(data, files), method: "POST" }); }
-export function updateBook(id: number, data: CreateBookRequest, files: BookFiles) { return bookRequest<Book>(`/api/admin/books/${id}`, { body: toBookFormData(data, files), method: "PUT" }); }
+export function createBook(payload: CreateBookPayload, files: BookFiles) {
+  return bookRequest<Book>("/api/admin/books", {
+    body: buildBookFormData(payload, files),
+    method: "POST",
+  });
+}
+
+export function updateBook(id: number, payload: UpdateBookPayload, files: BookFiles) {
+  const normalizedPayload: UpdateBookPayload = {
+    ...payload,
+    removeCover: payload.removeCover ?? false,
+    removePdf: payload.removePdf ?? false,
+    removeAudio: payload.removeAudio ?? false,
+  };
+
+  return bookRequest<Book>(`/api/admin/books/${id}`, {
+    body: buildBookFormData(normalizedPayload, files),
+    method: "PUT",
+  });
+}

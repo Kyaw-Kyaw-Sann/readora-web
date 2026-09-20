@@ -1,13 +1,62 @@
 import { Check, Crown } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-const freeBenefits = ["Access to free published books", "Reading and listening progress", "Favorites", "Personalized recommendations"];
-const premiumBenefits = ["Everything in Free", "Access to all premium books", "Full published library access"];
+const freeBenefits = ["Free published books", "Reading and listening progress", "Favorites", "Personalized recommendations"];
+const premiumBenefits = ["Everything included in Free", "Every premium title", "The full published library"];
 
 export function PricingSection() {
-  return <section className="scroll-mt-20 bg-secondary/35 py-20 sm:py-24" id="premium"><div className="mx-auto max-w-5xl px-5 sm:px-8"><div className="text-center"><p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Choose your shelf</p><h2 className="mt-2 font-heading text-3xl font-semibold sm:text-4xl">Free or Premium, the choice is yours</h2><p className="mt-4 text-muted-foreground">Premium pricing is shown for demonstration only. No live payment is processed.</p></div><div className="mt-10 grid gap-5 lg:grid-cols-2"><PlanCard benefits={freeBenefits} name="Free" price="$0" subtitle="A welcoming way to begin" /><PlanCard benefits={premiumBenefits} premium name="Premium" price="$4.99" subtitle="$39.99 yearly · best value" /></div></div></section>;
+  return (
+    <section className="scroll-mt-20 border-y border-border/70 bg-secondary/28 py-20 sm:py-24" id="premium">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-semibold tracking-[0.16em] text-primary uppercase">Simple access</p>
+          <h2 className="mt-3 font-heading text-3xl font-semibold sm:text-4xl">Choose how you want to read.</h2>
+          <p className="mt-4 leading-7 text-muted-foreground">Start with the free library or open every published title with Premium.</p>
+        </div>
+
+        <div className="mt-11 overflow-hidden rounded-2xl border border-border bg-card shadow-card lg:grid lg:grid-cols-2">
+          <Plan
+            benefits={freeBenefits}
+            description="The essentials for building a reading habit."
+            name="Free"
+            price="$0"
+          />
+          <Plan
+            benefits={premiumBenefits}
+            description="Complete access for curious, committed readers."
+            name="Premium"
+            premium
+            price="$4.99"
+          />
+        </div>
+        <p className="mt-4 text-center text-xs text-muted-foreground">Pricing is presented for this demo experience only. No live payment is processed.</p>
+      </div>
+    </section>
+  );
 }
 
-function PlanCard({ benefits, name, price, subtitle, premium = false }: { benefits: string[]; name: string; price: string; subtitle: string; premium?: boolean }) { return <article className={`relative rounded-2xl border bg-card p-7 shadow-card ${premium ? "border-primary/60 shadow-float" : "border-border"}`}>{premium ? <Badge className="absolute top-5 right-5"><Crown />Best value</Badge> : null}<h3 className="font-heading text-2xl font-semibold">{name}</h3><p className="mt-1 text-sm text-muted-foreground">{subtitle}</p><div className="mt-6 flex items-end gap-2"><span className="text-4xl font-semibold tracking-tight">{price}</span><span className="pb-1 text-sm text-muted-foreground">/ month</span></div><ul className="mt-7 space-y-3">{benefits.map((benefit) => <li className="flex items-start gap-2.5 text-sm" key={benefit}><Check className="mt-0.5 size-4 shrink-0 text-primary" />{benefit}</li>)}</ul><Button className="mt-8 h-10 w-full" nativeButton={false} render={<a href="#download" />} variant={premium ? "default" : "outline"}>{premium ? "Explore Premium" : "Start Reading"}</Button></article>; }
+function Plan({ benefits, description, name, price, premium = false }: { benefits: string[]; description: string; name: string; price: string; premium?: boolean }) {
+  return (
+    <article className={`relative p-7 sm:p-9 ${premium ? "border-t border-primary/30 bg-primary/[0.045] lg:border-t-0 lg:border-l" : ""}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xl font-semibold text-foreground">{name}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+        </div>
+        {premium ? <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold text-primary-foreground"><Crown aria-hidden="true" className="size-3.5" />Best value</span> : null}
+      </div>
+      <div className="mt-8 flex items-end gap-2 border-b border-border/80 pb-7">
+        <span className="text-4xl font-semibold tracking-tight">{price}</span>
+        <span className="pb-1 text-sm text-muted-foreground">/ month</span>
+        {premium ? <span className="ml-auto pb-1 text-xs text-muted-foreground">or $39.99 yearly</span> : null}
+      </div>
+      <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        {benefits.map((benefit) => <li className="flex items-start gap-2.5 text-sm" key={benefit}><Check aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-primary" />{benefit}</li>)}
+      </ul>
+      <Button className="mt-8 h-10 w-full" nativeButton={false} render={<a href="#download" />} variant={premium ? "default" : "outline"}>
+        {premium ? "Explore Premium" : "Start with Free"}
+      </Button>
+    </article>
+  );
+}

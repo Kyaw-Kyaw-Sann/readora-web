@@ -1,29 +1,37 @@
-import type { Category } from "@/types/category";
-
 export type BookAccessType = "FREE" | "PREMIUM";
 
 export type BookStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
+export interface CategoryResponse {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  active: boolean;
+}
+
 export interface Book {
   id: number;
   title: string;
-  description: string;
-  isbn: string;
-  language: string;
-  publicationDate: string;
+  description: string | null;
+  isbn: string | null;
+  language: string | null;
+  publicationDate: string | null;
   author: string;
   coverUrl: string | null;
   pdfUrl: string | null;
   audioUrl: string | null;
-  pageCount: number;
+  pageCount: number | null;
   audioDurationSeconds: number | null;
   accessType: BookAccessType;
   status: BookStatus;
   viewCount: number;
-  categories: Category[];
+  categories: CategoryResponse[];
   createdAt: string;
   updatedAt: string;
 }
+
+export type BookDetailResponse = Book;
 
 export type BookListItem = Pick<
   Book,
@@ -31,21 +39,30 @@ export type BookListItem = Pick<
 > &
   Partial<Pick<Book, "status" | "viewCount">>;
 
-export interface CreateBookRequest {
+export interface CreateBookPayload {
   title: string;
-  description: string;
-  isbn: string;
-  language: string;
-  publicationDate: string;
+  description?: string | null;
+  isbn?: string | null;
+  language?: string | null;
+  publicationDate?: string | null;
   author: string;
-  pageCount: number;
-  audioDurationSeconds: number | null;
+  pageCount?: number | null;
+  audioDurationSeconds?: number | null;
   accessType: BookAccessType;
   categoryIds: number[];
 }
 
-// The exact update request contract must be verified in Swagger before implementation.
-export type UpdateBookRequest = Partial<CreateBookRequest>;
+export interface UpdateBookPayload extends CreateBookPayload {
+  removeCover?: boolean;
+  removePdf?: boolean;
+  removeAudio?: boolean;
+}
+
+export interface BookFiles {
+  cover?: File | null;
+  pdf?: File | null;
+  audio?: File | null;
+}
 
 export interface AdminBookFilters {
   search?: string;

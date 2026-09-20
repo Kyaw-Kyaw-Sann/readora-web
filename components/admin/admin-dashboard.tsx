@@ -46,12 +46,13 @@ export function AdminDashboard() {
   const { users, books, reviews, subscriptions } = dashboardQuery.data;
 
   return (
-    <div className="space-y-readora-lg">
-      <div>
+    <div className="space-y-6">
+      <div className="flex flex-col justify-between gap-3 border-b border-border/80 pb-5 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-xs font-semibold tracking-[0.1em] text-primary uppercase">Overview</p>
+          <h1 className="mt-1.5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Dashboard</h1>
+        </div>
         <p className="text-sm text-muted-foreground">Your Readora library at a glance.</p>
-        <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight text-foreground">
-          Dashboard overview
-        </h1>
       </div>
 
       <section aria-label="Key statistics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

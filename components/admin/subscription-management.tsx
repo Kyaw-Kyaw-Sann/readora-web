@@ -1,8 +1,8 @@
 "use client";
 
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, CreditCard, RefreshCw, Search } from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft, ChevronRight, CreditCard, RefreshCw, Search, X } from "lucide-react";
+import { useDeferredValue, useState } from "react";
 
 import { UserAvatar } from "@/components/admin/user-management";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,8 @@ const pageSize = 10;
 
 export function SubscriptionManagement() {
   const [filters, setFilters] = useState<AdminSubscriptionFilters>({ page: 0, size: pageSize });
-  const subscriptionsQuery = useSubscriptions(filters);
+  const deferredSearch = useDeferredValue(filters.search);
+  const subscriptionsQuery = useSubscriptions({ ...filters, search: deferredSearch });
   const subscriptions = subscriptionsQuery.data;
 
   const updateFilters = (changes: Partial<AdminSubscriptionFilters>) => {
@@ -44,17 +45,18 @@ export function SubscriptionManagement() {
 }
 
 function SubscriptionFilters({ filters, onChange }: { filters: AdminSubscriptionFilters; onChange: (changes: Partial<AdminSubscriptionFilters>) => void }) {
+  const hasFilters = filters.search !== undefined || filters.status !== undefined || filters.plan !== undefined;
+  const selectClassName = "h-10 rounded-lg border border-input bg-card px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+
   return (
-    <Card className="border border-border py-0 shadow-card">
-      <CardContent className="grid gap-3 p-readora-md lg:grid-cols-[minmax(0,1fr)_10rem_10rem_auto]">
-        <div className="relative"><Search aria-hidden="true" className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground" /><Input className="pl-9" onChange={(event) => onChange({ search: event.target.value || undefined })} placeholder="Search user name or email…" value={filters.search ?? ""} /></div>
+      <div aria-label="Subscription filters" className="grid gap-3 md:grid-cols-[minmax(0,1fr)_11rem_11rem_auto]">
+        <div className="relative"><Search aria-hidden="true" className="pointer-events-none absolute top-3 left-3 size-4 text-muted-foreground" /><Input className="h-10 bg-card pl-9" onChange={(event) => onChange({ search: event.target.value || undefined })} placeholder="Search user name or email…" type="search" value={filters.search ?? ""} /></div>
         <label className="sr-only" htmlFor="subscription-status-filter">Filter by subscription status</label>
-        <select className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" id="subscription-status-filter" onChange={(event) => onChange({ status: (event.target.value || undefined) as SubscriptionStatus | undefined })} value={filters.status ?? ""}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="EXPIRED">Expired</option><option value="CANCELLED">Cancelled</option></select>
+        <select className={selectClassName} id="subscription-status-filter" onChange={(event) => onChange({ status: (event.target.value || undefined) as SubscriptionStatus | undefined })} value={filters.status ?? ""}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="EXPIRED">Expired</option><option value="CANCELLED">Cancelled</option></select>
         <label className="sr-only" htmlFor="subscription-plan-filter">Filter by subscription plan</label>
-        <select className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" id="subscription-plan-filter" onChange={(event) => onChange({ plan: (event.target.value || undefined) as SubscriptionPlan | undefined })} value={filters.plan ?? ""}><option value="">All plans</option><option value="MONTHLY">Monthly</option><option value="YEARLY">Yearly</option></select>
-        <Button onClick={() => onChange({ search: undefined, status: undefined, plan: undefined })} type="button" variant="outline">Clear filters</Button>
-      </CardContent>
-    </Card>
+        <select className={selectClassName} id="subscription-plan-filter" onChange={(event) => onChange({ plan: (event.target.value || undefined) as SubscriptionPlan | undefined })} value={filters.plan ?? ""}><option value="">All plans</option><option value="MONTHLY">Monthly</option><option value="YEARLY">Yearly</option></select>
+        {hasFilters ? <Button className="h-10 justify-self-start px-3 md:justify-self-auto" onClick={() => onChange({ search: undefined, status: undefined, plan: undefined })} type="button" variant="ghost"><X aria-hidden="true" />Clear</Button> : null}
+      </div>
   );
 }
 

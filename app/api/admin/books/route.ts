@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getApiErrorMessage, isApiError } from "@/lib/api/errors";
 import { authorizedApiRequest } from "@/lib/auth/authorized-request";
-import { bookFormSchema } from "@/lib/validations/book";
+import { createBookPayloadSchema } from "@/lib/validations/book";
 import type { PaginatedResponse } from "@/types/api";
 import type { Book, BookListItem } from "@/types/book";
 
@@ -34,8 +34,18 @@ export async function POST(request: Request) {
   const formData = await readFormData(request);
   if (!formData) return invalidRequestResponse();
 
-  const parsed = parseBookRequest(formData);
+  const requestPart = formData.get("request");
+  if (!(requestPart instanceof Blob) || requestPart.type !== "application/json") {
+    return unsupportedRequestPartResponse();
+  }
+
+  const parsed = await parseBookRequest(requestPart);
   if (!parsed.success) return validationErrorResponse(parsed.errors);
+
+  formData.set(
+    "request",
+    new Blob([JSON.stringify(parsed.data)], { type: "application/json" }),
+  );
 
   try {
     return NextResponse.json(
@@ -54,14 +64,11 @@ async function readFormData(request: Request) {
   }
 }
 
-function parseBookRequest(formData: FormData) {
-  const requestValue = formData.get("request");
-  if (typeof requestValue !== "string") return { success: false as const, errors: {} };
-
+async function parseBookRequest(requestPart: Blob) {
   try {
-    const result = bookFormSchema.safeParse(JSON.parse(requestValue));
+    const result = createBookPayloadSchema.safeParse(JSON.parse(await requestPart.text()));
     return result.success
-      ? { success: true as const, errors: {} }
+      ? { success: true as const, data: result.data, errors: {} }
       : { success: false as const, errors: result.error.flatten().fieldErrors };
   } catch {
     return { success: false as const, errors: {} };
@@ -72,8 +79,15 @@ function invalidRequestResponse() {
   return NextResponse.json({ success: false, message: "Enter valid book details.", data: null }, { status: 400 });
 }
 
+function unsupportedRequestPartResponse() {
+  return NextResponse.json(
+    { success: false, message: getApiErrorMessage(415), data: null },
+    { status: 415 },
+  );
+}
+
 function validationErrorResponse(data: Record<string, string[] | undefined>) {
-  return NextResponse.json({ success: false, message: "Please correct the highlighted fields.", data }, { status: 422 });
+  return NextResponse.json({ success: false, message: "Please correct the highlighted fields.", data }, { status: 400 });
 }
 
 function toErrorResponse(error: unknown) {
